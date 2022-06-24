@@ -1,0 +1,108 @@
+#include "mobilepage.h"
+#include "ui_mobilepage.h"
+
+
+extern telnetclient *telentClinetThread;
+extern NetworkThread *networkThread;
+
+MobilePage::MobilePage(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::MobilePage)
+{
+    ui->setupUi(this);
+
+    uiTimer = new QTimer(this);
+    connect(uiTimer, SIGNAL(timeout()), this, SLOT(UpdateUI()));
+    uiTimer->start(100);
+}
+
+MobilePage::~MobilePage()
+{
+    delete ui;
+}
+
+void MobilePage::UpdateUI()
+{
+    QString text = QString::fromStdString(telentClinetThread->serverMessage);
+    //cout << telentClinetThread->serverMessage <<endl;
+
+    if(text.length() < 1)
+    {
+
+    }
+    else
+    {
+        ui->te_terminal->append(text);
+    }
+    telentClinetThread->serverMessage = "";
+
+    SetRobotInfoText();
+}
+
+void MobilePage::SetRobotInfoText()
+{
+
+    ui->te_status->setText(networkThread->status);
+    ui->le_battery->setText(QString::number(networkThread->baterry));
+    ui->le_location->setText(QString::number(networkThread->x) + " , " + QString::number(networkThread->y) + " , " + QString::number(networkThread->heading));
+    ui->le_temperature->setText(QString::number(networkThread->temperature));
+
+}
+
+void MobilePage::on_btn_send_clicked()
+{
+    QString text = ui->te_send->toPlainText();
+    telentClinetThread->sendCommand = text.toStdString();
+    cout << text.toStdString() << endl;
+    telentClinetThread->flag = 1;
+}
+
+void MobilePage::on_btn_movepoint_clicked()
+{
+    QString text = "dotask gotopoint ";
+    text.append(ui->le_x_pos->text());
+    text.append(" ");
+    text.append(ui->le_y_pos->text());
+
+    telentClinetThread->sendCommand = text.toStdString();
+    cout << text.toStdString() << endl;
+    telentClinetThread->flag = 1;
+}
+
+void MobilePage::on_btn_say_clicked()
+{
+    QString text = "dotask say ";
+    text.append(ui->le_say->text());
+    telentClinetThread->sendCommand = text.toStdString();
+    cout << text.toStdString() << endl;
+    telentClinetThread->flag = 1;
+}
+
+void MobilePage::on_btn_dock_clicked()
+{
+    QString text = "dock";
+    telentClinetThread->sendCommand = text.toStdString();
+    cout << text.toStdString() << endl;
+    telentClinetThread->flag = 1;
+}
+
+void MobilePage::on_btn_undock_clicked()
+{
+    QString text = "undock";
+    telentClinetThread->sendCommand = text.toStdString();
+    cout << text.toStdString() << endl;
+    telentClinetThread->flag = 1;
+}
+
+void MobilePage::on_btn_stop_clicked()
+{
+    QString text = "stop";
+    telentClinetThread->sendCommand = text.toStdString();
+    cout << text.toStdString() << endl;
+    telentClinetThread->flag = 1;
+}
+
+void MobilePage::on_btn_movegoal_clicked()
+{
+    
+}
