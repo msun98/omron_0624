@@ -47,13 +47,21 @@ private:
 
     int state = 0; //스테이트 머신의 상태
     void read(QString filename);
-    QVector <cv::Point2d> point_list;
+    QVector <cv::Point2d> point_list;//나중에 헤딩이 필요한 경우 3d로 변경
     QVector<double> vector_x;
     QVector<double> vector_y;
     cv::Mat colored_map;
     cv::Mat Map_original;
-    bool add_flag = false;
-    int push_num=0;
+//    bool add_flag = false;
+
+    int push_num = 0;
+    double mmperpix_x;
+    double mmperpix_y;
+    double min_x;
+    double min_y;
+//    bool color_flag = 1;
+
+
 
 
 private slots:

@@ -209,7 +209,7 @@ border-color: rgb(173, 127, 168);
      <number>2</number>
     </property>
     <property name="text">
-     <string> =&gt; MovePoint버튼을 누르면 위에서부터 명령이 실행됩니다.</string>
+     <string> =&gt; MovePoint 버튼을 누르면 위에서부터 명령이 실행됩니다.</string>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
@@ -290,8 +290,8 @@ border-color: rgb(173, 127, 168);
    <widget class="QPushButton" name="UP_PUSH">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>60</y>
+      <x>320</x>
+      <y>70</y>
       <width>31</width>
       <height>25</height>
      </rect>
@@ -303,8 +303,8 @@ border-color: rgb(173, 127, 168);
    <widget class="QPushButton" name="UP_DOWN">
     <property name="geometry">
      <rect>
-      <x>270</x>
-      <y>100</y>
+      <x>320</x>
+      <y>110</y>
       <width>31</width>
       <height>25</height>
      </rect>
@@ -313,18 +313,31 @@ border-color: rgb(173, 127, 168);
      <string>↓</string>
     </property>
    </widget>
-   <widget class="QLabel" name="Push_num">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>80</y>
-      <width>31</width>
-      <height>21</height>
+      <x>270</x>
+      <y>60</y>
+      <width>41</width>
+      <height>51</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
-    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QLabel" name="Push_num_2">
+       <property name="text">
+        <string>번호</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="Push_num">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QLabel" name="lable_get_info_2">
@@ -483,41 +496,6 @@ p, li { white-space: pre-wrap; }
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="layoutWidget">
-   <property name="geometry">
-    <rect>
-     <x>1080</x>
-     <y>30</y>
-     <width>501</width>
-     <height>431</height>
-    </rect>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_3">
-    <item>
-     <widget class="QMyLabel" name="txt">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Plain</enum>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="text">
-       <string>show map</string>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <widget class="QLabel" name="label_server_response_2">
    <property name="geometry">
     <rect>
@@ -529,6 +507,41 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>MAP</string>
+   </property>
+  </widget>
+  <widget class="QMyLabel" name="txt">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>1081</x>
+     <y>31</y>
+     <width>500</width>
+     <height>350</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>1080</x>
+     <y>540</y>
+     <width>501</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>show map</string>
    </property>
   </widget>
  </widget>

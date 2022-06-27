@@ -142,6 +142,7 @@ void MobilePage::on_btn_movegoal_clicked()
     cout<<"hi"<<endl;
 }
 
+int i_num = 0;
 void MobilePage::on_add_clicked()
 {
     QString x1 = ui -> x_get -> text();
@@ -152,7 +153,18 @@ void MobilePage::on_add_clicked()
     ui -> listView -> addItem(add);
     ui -> x_get -> setText("");
     ui -> y_get -> setText("");
-    add_flag = true;
+
+    bool add_flag = true;
+
+    if (add_flag)
+    {
+        i_num = i_num+1;
+        cv::circle(colored_map, cv::Point(pt1.x,pt1.y), 2, cv::Scalar(255, 0, 0),2,-1); //red (save)
+        cv::putText(colored_map, to_string(i_num) ,cv::Point(pt1.x,pt1.y), 1, 2, cv::Scalar(255, 0, 0), 1, 8);
+//        i_num = i_num+1;
+        add_flag = false;
+    }
+
 }
 
 void MobilePage::num()
@@ -296,8 +308,8 @@ void MobilePage::read(QString filename) // 데이터 읽음과 동시에 분리.
        QStringList x_1; //선언을 함.
        x_1 = x[i].split(" ");
 
-       x_original= x_1[0].toDouble();
-       y_original= x_1[1].toDouble();
+       x_original = x_1[0].toDouble();
+       y_original = x_1[1].toDouble();
 
        vector_x.push_back(x_original);
        vector_y.push_back(y_original);
@@ -305,8 +317,8 @@ void MobilePage::read(QString filename) // 데이터 읽음과 동시에 분리.
 
     double max_x = *max_element(vector_x.begin(), vector_x.end());
     double max_y = *max_element(vector_y.begin(), vector_y.end());
-    double min_x = *min_element(vector_x.begin(), vector_x.end());
-    double min_y = *min_element(vector_y.begin(), vector_y.end());
+    min_x = *min_element(vector_x.begin(), vector_x.end());
+    min_y = *min_element(vector_y.begin(), vector_y.end());
 
     for (int i=0; i<x.size()-1; i++)
     {
@@ -317,18 +329,25 @@ void MobilePage::read(QString filename) // 데이터 읽음과 동시에 분리.
        double y_original= x_1[1].toDouble();
 //       cout<<x_original<<endl;
 
-       int mmperpix_x = round((max_x-min_x)/ui->txt->width());
-       int mmperpix_y = round((max_y-min_y)/ui->txt->height());
+       mmperpix_x = round((max_x-min_x)/ui->txt->width());
+       mmperpix_y = round((max_y-min_y)/ui->txt->height());
 
-       double x = (x_original+abs(min_x))/mmperpix_x;
-       double y = (y_original+abs(min_y))/mmperpix_y;
+       double I_x = (x_original+abs(min_x))/mmperpix_x;
+       double I_y = (y_original+abs(min_y))/mmperpix_y;
 
-//       cout<<x_original<<endl;
+//       I_x=I_x*(-1);//상하 이미지 반전￣
+//       I_y=I_y*(-1);
 
-       point_list.push_back(cv::Point2d(x,y));
+//       cout<<x_original<<endl;￣
+
+//       flip_point_list.push_back(cv::Point2d(-I_x,-I_y));
+
+       point_list.push_back(cv::Point2d(I_x,I_y));
        map.ptr<uchar>(point_list[i].y)[int(point_list[i].x)]=0;
 
     }
+    cv::flip(map,map,0);//이미지 상하반전￣
+//    cv::rotate(map,map,cv::ROTATE_180);
 //    cv::imwrite("qwer.bmp", map);
     cv::cvtColor(map, colored_map, cv::COLOR_GRAY2BGR);
 //    cv::imwrite("qwer2.bmp", colored_map);
@@ -366,49 +385,42 @@ void MobilePage::read(QString filename) // 데이터 읽음과 동시에 분리.
 /////이전 값 기억하고 있을 것///
 cv::Point2d pt1_old ;
 
-bool color_flag = 1;
 
+int add_num =1;
+bool color_flag = 1;
 void MobilePage::mouse_clicked(double x, double y)
 {
     pt1.x = x * ui->txt->width();
     pt1.y = y * ui->txt->height();
 //    cout<<pt1<<endl;
-    ui -> x_get -> setText(QString::number(pt1.x));
-    ui -> y_get -> setText(QString::number(pt1.y));
+
+//    cout<<pt1.y<<endl;
+
+    double r_x = pt1.x * mmperpix_x-abs(min_x)-80-2;//오차 수정￣￣
+//    double r_y_fliped = pt1.y * mmperpix_y-abs(min_y)-20+3;
+    double r_y = (ui->txt->height() - pt1.y - 1) * mmperpix_y-abs(min_y) + 10;//오차수정￣(flip 모드로 변환시켰기 때문에 변환 과정 필요￣￣)
+
+
+    ui -> x_get -> setText(QString::number(r_x));
+    ui -> y_get -> setText(QString::number(r_y));
     color_flag = 1;
 
     ///put color circle on the image
 //    cout<<colored_map<<endl;
 //    cout<<color_flag<<endl;
+    /////////////////////////////////////////////////////////////////////////////
     if (color_flag)
     {
-        cv::circle(colored_map, cv::Point(pt1.x,pt1.y), 2, cv::Scalar(0, 50, 255),2,-1);
-        ui->txt->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(colored_map)));
 //        color_flag = false;
-
-//        if (color_flag==false)
-//        {
-//            ui->txt->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(Map_original)));
-//        }
-        if (add_flag)
+        cv::circle(colored_map, cv::Point(pt1.x,pt1.y), 2, cv::Scalar(0, 0, 255),2,-1);//blue (proceeding)
+        ui->txt->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(colored_map)));
+        color_flag = 0;
+        if(color_flag==0)
         {
-            ui->txt->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(colored_map)));
-            add_flag = false;
-            color_flag = false;
-        }
-
-        else
-        {
-            ui->txt->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(Map_original)));
+            cv::circle(colored_map, cv::Point(pt1.x,pt1.y), 2, cv::Scalar(255, 255, 255),2,-1);
         }
     }
 
-
-
-    cout<<color_flag<<endl;
-//    cv::circle(colored_map, cv::Point(pt1.x,pt1.y), 2, cv::Scalar(0, 50, 255),2,-1);
-
-//    ui->txt->setPixmap(QPixmap::fromImage(mat_to_qimage_cpy(colored_map)));
     state = 0;
 }
 
@@ -420,20 +432,30 @@ void MobilePage::on_delete_2_clicked()
 //    ui -> listView -> addItem(push_num);
 
 
-    ui->listView->takeItem(push_num);//숫자는 빼야하는 순서임.
-    push_num = 0;
+    ui->listView->takeItem(push_num-1);//숫자는 빼야하는 순서임. 0번부터 시작해야하지만 가독성을 위해 0번부터 시작하게 해두었으므로 빼줌.
+    push_num = 1;
 }
 
 void MobilePage::on_UP_PUSH_clicked()
 {
+    if (push_num > q.size()-1)
+    {
+        push_num = q.size()-1;
+    }
     push_num = push_num + 1;
+
     ui -> Push_num ->setText(QString::number(push_num));
-    cout<<push_num<<endl;
+//    cout<<push_num<<endl;
 }
 
 void MobilePage::on_UP_DOWN_clicked()
 {
     push_num = push_num - 1;
+    if (push_num < 1)
+    {
+        push_num = 1;
+    }
+
     ui -> Push_num ->setText(QString::number(push_num));
-    cout<<push_num<<endl;
+//    cout<<push_num<<endl;
 }
